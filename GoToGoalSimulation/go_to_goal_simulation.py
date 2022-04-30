@@ -1,3 +1,13 @@
+"""
+
+   Go-To-Goal Simulation for Differential Drive Robot with Python
+   
+   author: Abdullah DANGAC (@abdullahdangac)
+   
+   Created 21.10.2021
+   
+"""
+
 import math
 import pygame
 
