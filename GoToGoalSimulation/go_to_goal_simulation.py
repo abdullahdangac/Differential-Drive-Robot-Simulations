@@ -1,11 +1,11 @@
 """
 
    Go-To-Goal Simulation for Differential Drive Robot with Python
-   
+
    author: Abdullah DANGAC (@abdullahdangac)
-   
+
    Created 21.10.2021
-   
+
 """
 
 import math
@@ -94,7 +94,7 @@ class Environment:
 
 
 class Robot:
-    def __init__(self, robot_x, robot_y, robot_theta, x_goal, y_goal, robotImg, robotWidth=0.03):
+    def __init__(self, robot_x, robot_y, robot_theta, robotImg, robotWidth=0.03):
 
         # meter -> pixel transform
         self.meter_to_pixel = 3779.52
@@ -113,8 +113,8 @@ class Robot:
         self.v_velocity = 0
 
         # goal point data
-        self.x_g = x_goal
-        self.y_g = y_goal
+        self.x_g = 0
+        self.y_g = 0
 
         # robot graphics
         self.img = pygame.image.load(robotImg)
@@ -162,18 +162,21 @@ class Robot:
         self.wl = vl / self.R
         return self.wr, self.wl
 
-    def controller(self):
+    def controller(self, goal_pos):
         """
         CONTROLLER
         control input: robot pose (x, y, theta) and goal point (x_goal, y_goal)
         control outputs: angular velocity of right and left wheel (wr, wl)
         """
+        self.x_g = goal_pos[0]
+        self.y_g = goal_pos[1]
+
         wr = self.wheel_angular_velocity()[0]
         wl = self.wheel_angular_velocity()[1]
         return wr, wl
 
-    def move(self):
-        [wr, wl] = self.controller()
+    def move(self, goal_pos):
+        [wr, wl] = self.controller(goal_pos)
 
         vr = wr * self.R
         vl = wl * self.R
@@ -206,7 +209,7 @@ def main():
     environment = Environment(map_width, map_height)
 
     # robot object
-    robot = Robot(start_x, start_y, start_theta, goal_x, goal_y,
+    robot = Robot(start_x, start_y, start_theta,
                   r"C:\Users\AbdullahDangac\Desktop\go_to_goal_simulation\robot\diff_drive_robot.png")
 
     # simulation loop
@@ -219,7 +222,7 @@ def main():
         pygame.display.update()
         environment.map.fill(environment.black)
 
-        robot.move()
+        robot.move([goal_x, goal_y])
         robot.draw(environment.map)
 
         if robot.theta < 0:
